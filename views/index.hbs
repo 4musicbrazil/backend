@@ -1,0 +1,96 @@
+<html>
+  <head>
+    <title>{{API_NAME}} {{API_VERSION}}</title>
+    <link
+      href='https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css'
+      rel='stylesheet'
+    />
+  </head>
+  <body class=''>
+    <div class='w-full h-full'>
+      <nav class='bg-white shadow-lg bg-gray-50 '>
+        <div class='items-center justify-between px-8 py-2 md:flex md:px-12'>
+          <div class='flex items-center justify-between'>
+            <div
+              class='item-center flex space-x-3 text-2xl font-bold text-gray-800 md:text-3xl'
+            >
+              <img
+                class='rounded-lg bg-black'
+                src='/logo.png'
+                width='40'
+                height='20'
+              />
+              <a href='https://akag.digital/'>{{API_NAME}} {{API_VERSION}}</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class='flex bg-white' style='height:600px;'>
+        <div
+          class='flex items-center px-8 text-center md:px-12 lg:w-1/2 lg:text-left'
+        >
+          <div>
+            <div class='py-8'>
+              <div
+                class='color-green font-bold text-blue-500 uppercase'
+              >{{API_NAME}}
+                {{API_VERSION}}</div>
+              <div
+                class='color-green font-bold text-blue-500 capitalize'
+              >Environmen: {{ENVIRONMENT}}</div>
+                        <div
+                class='color-green font-bold text-blue-500 capitalize'
+              >Year: {{API_YEAR}}</div>
+              
+            </div>
+            <h2
+              class='text-3xl font-semibold text-gray-800 md:text-4xl'
+            >Desenhamos e transformamos modelos de negócio
+              <span class='text-red-600'> por meio de tecnologia.</span></h2>
+            <p class='mt-2 text-sm text-gray-500 md:text-base'>Entregamos
+              soluções em Implementação e evolução de e-commerce e marketplace,
+              Consultoria em Negócios Digitais, Marketing de Performance
+              direcionado a vendas e muito mais.</p>
+            <div class='mt-6 flex justify-center lg:justify-start'>
+              <a
+                class='rounded bg-gray-900 px-4 py-3 text-xs font-semibold text-gray-200 hover:bg-gray-800'
+                href='https://www.akag.digital'
+                target='_blank'
+              >Faça contato</a>
+              <a
+                class='mx-4 rounded bg-gray-300 px-4 py-3 text-xs font-semibold text-gray-900 hover:bg-gray-400'
+                href='/docs'
+              >Documentação</a>
+            </div>
+          </div>
+        </div>
+        <div
+          class='hidden lg:block lg:w-1/2'
+          style='clip-path:polygon(10% 0, 100% 0%, 100% 100%, 0 100%)'
+        >
+          <div
+            class='h-full object-cover'
+            style='background-image: url(/home.avif)'
+          >
+            <div class='h-full bg-black opacity-25'></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- This is an example component -->
+    <div class='bg-gray-900 '>
+      <div class='mx-auto  py-10 text-white'>
+        <div
+          class=' flex flex-col items-center text-sm text-gray-400 '
+        >
+          <p >&copy;
+            {{API_NAME}}
+            {{API_VERSION}}
+            {{API_YEAR}}</p>
+
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

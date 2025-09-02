@@ -1,0 +1,17 @@
+version: '3.9'
+ 
+services:
+  template_database:
+    image: mysql:5.7
+    container_name: template_database
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+    ports:
+      - "3306:3306"
+    volumes:
+      - template_database:/var/lib/mysql
+volumes:
+  template_database:

@@ -1,0 +1,14 @@
+
+### 
+POST https://urchin-app-facsi.ondigitalocean.app/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkwIjoiZjQxOTQ2MTY2MzRmMDIwOWM5MDczYWVhOTI2M2UzMTg6NTNjNDMwYTlkNmFkNjBlNjMwMjg2YTU1MzUyMzJmOThlYjFlYTM3NTA5YjhjYjlkZDYzNDE1MzE1NmY5ZmRiMjg4YTc5N2JhIiwia2V5MSI6ImE3M2Y1NTY4M2IxNjUzY2UxYzNkMWE5MTE4NmM4MjNkOjkwMDEzN2NjNDhhYWFiN2Q0YzlhYzE5YmRlODNjZjdmZjciLCJtYXRjaCI6IiQyYiQxMCRqRkZWc3FyYzdBQXAwdEhybjVySzZPa2NLVnhmbk9JV0lDV3BxaXZxcDBvQVlZSXpoMVo4aSIsImlhdCI6MTczMjAxOTczNiwiZXhwIjoxNzMyMDc5NzM2fQ.Usq_V5HF5CEV4_9x1A19t8_LkYZZMHH-dKs19MoUbB8
+
+{
+  "galleryUuid": "c0e1f218-4e0f-4c6d-a223-fa30661ff891",
+  "platformId": "SHD-5asdASDH-asd",
+  "name": "Nome do produto",
+  "description": "Descrição do produto",
+  "status": true,
+  "url": "https://www.product.com.br/sku=123"
+}
