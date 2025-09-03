@@ -25,7 +25,7 @@ interface DataSourceOptions {
   logging: boolean;
   ssl: any;
 }
-
+console.log(process.env);
 const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
