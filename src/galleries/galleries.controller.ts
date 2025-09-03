@@ -30,8 +30,8 @@ export class GalleriesController {
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
-  @Roles(Role.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(Role.ADMIN)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   create(
     @Body() createGalleryDto: CreateGalleryDto,
     @UploadedFile() file: Express.Multer.File,
