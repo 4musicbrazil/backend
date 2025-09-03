@@ -8,12 +8,14 @@ import { UserInterfaceRepository } from './repository/user.interface.repository'
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { RoleModule } from '../role/role.module';
+import { StorageService } from '../lib/storage.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), CloudinaryModule, RoleModule],
+  imports: [TypeOrmModule.forFeature([User]), RoleModule],
   controllers: [UsersController],
   providers: [
     UserRepository,
+    StorageService,
     UsersService,
     {
       provide: UserInterfaceRepository,
