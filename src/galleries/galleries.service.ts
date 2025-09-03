@@ -3,16 +3,13 @@ import { CreateGalleryDto } from './dto/create-gallery.dto';
 import { UpdateGalleryDto } from './dto/update-gallery.dto';
 
 import { GalleryInterfaceRepository } from './repository/gallery.interface.repository';
-import { CloudinaryAudioVideoService } from '../lib/cloudinary/cloudinary-audio-video.service';
-import { CloudinaryImageService } from '../lib/cloudinary/cloudinary-image.service';
-import { CloudinaryInterface } from 'src/lib/cloudinary/interface/cloudinary.interface';
+import { StorageService } from '../lib/storage.service';
 
 @Injectable()
 export class GalleriesService {
   constructor(
     private readonly galleryInterfaceRepository: GalleryInterfaceRepository,
-    private readonly cloudinaryVideoService: CloudinaryAudioVideoService,
-    private readonly cloudinaryImageService: CloudinaryImageService,
+    private readonly storageService: StorageService,
   ) {}
   async create(
     file: Express.Multer.File,
@@ -25,17 +22,16 @@ export class GalleriesService {
         createGalleryDto.type == 'video' ||
         createGalleryDto.type == 'audio'
       ) {
-        uploadFile = await this.cloudinaryVideoService.callUploadFile(file);
+        uploadFile = await this.storageService.uploadFile(file);
       }
       if (createGalleryDto.type == 'image') {
-        uploadFile = await this.cloudinaryImageService.callUploadImage(file);
+        uploadFile = await this.storageService.uploadFile(file);
       }
 
       const galeryData = {
         ...createGalleryDto,
-
-        galleryUrl: uploadFile?.secure_url ?? null,
-        galleryKey: uploadFile?.public_id ?? null,
+        galleryUrl: uploadFile?.cdnUrl ?? null,
+        galleryKey: uploadFile?.key ?? null,
       };
       return await this.galleryInterfaceRepository.create(galeryData);
     } catch (error) {
@@ -85,15 +81,16 @@ export class GalleriesService {
       }
 
       if (file?.buffer && file?.originalname) {
-        const uploadFile: CloudinaryInterface =
-          await this.cloudinaryVideoService.callUploadFile(file);
-        gallery.galleryUrl = uploadFile?.secure_url ?? null;
-        gallery.galleryKey = uploadFile?.public_id ?? null;
+        const uploadFile = await this.storageService.uploadFile(file);
+        // await this.cloudinaryVideoService.callUploadFile(file);
+        gallery.galleryUrl = uploadFile?.cdnUrl ?? null;
+        gallery.galleryKey = uploadFile?.key ?? null;
       }
 
       if (name) {
         gallery.name = name;
       }
+
       if (description) {
         gallery.description = description;
       }
@@ -112,6 +109,7 @@ export class GalleriesService {
       if (!gallery) {
         throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
       }
+      await this.storageService.deleteFile(gallery.galleryKey);
       return await this.galleryInterfaceRepository.remove(gallery);
     } catch (error) {
       throw new HttpException(error?.message, HttpStatus.CONTINUE);
