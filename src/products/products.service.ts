@@ -25,6 +25,7 @@ export class ProductsService {
       }
       return await this.productInterfaceRepository.create(createProductDto);
     } catch (error) {
+      console.log(error);
       throw new HttpException(error?.message, HttpStatus.CONFLICT);
     }
   }
