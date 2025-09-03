@@ -2,16 +2,15 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductInterfaceRepository } from './repository/product.interface.repository';
-import { IntegrationService } from 'src/integrations/stores/integration.service';
-import { CloudinaryAudioVideoService } from '../lib/cloudinary/cloudinary-audio-video.service';
-import { CloudinaryInterface } from 'src/lib/cloudinary/interface/cloudinary.interface';
-import { CloudinaryImageService } from 'src/lib/cloudinary/cloudinary-image.service';
+import { IntegrationService } from '../integrations/stores/integration.service';
+
+import { StorageService } from '../lib/storage.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     private readonly productInterfaceRepository: ProductInterfaceRepository,
-    private readonly cloudinaryImageService: CloudinaryImageService,
+    private readonly storageService: StorageService,
     private readonly integrationService: IntegrationService,
   ) {}
   async create(
@@ -20,10 +19,9 @@ export class ProductsService {
   ): Promise<any> {
     try {
       if (file?.buffer && file?.originalname) {
-        const uploadFile: CloudinaryInterface =
-          await this.cloudinaryImageService.callUploadImage(file);
-        createProductDto.galleryUrl = uploadFile?.secure_url ?? null;
-        createProductDto.galleryKey = uploadFile?.public_id ?? null;
+        const uploadFile = await this.storageService.uploadFile(file);
+        createProductDto.galleryUrl = uploadFile?.cdnUrl ?? null;
+        createProductDto.galleryKey = uploadFile?.key ?? null;
       }
       return await this.productInterfaceRepository.create(createProductDto);
     } catch (error) {
