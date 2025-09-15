@@ -16,17 +16,7 @@ export class GalleriesService {
     createGalleryDto: CreateGalleryDto,
   ): Promise<any> {
     try {
-      let uploadFile: any = null;
-
-      if (
-        createGalleryDto.type == 'video' ||
-        createGalleryDto.type == 'audio'
-      ) {
-        uploadFile = await this.storageService.uploadFile(file);
-      }
-      if (createGalleryDto.type == 'image') {
-        uploadFile = await this.storageService.uploadFile(file);
-      }
+      const uploadFile = await this.storageService.uploadFile(file);
 
       const galeryData = {
         ...createGalleryDto,
