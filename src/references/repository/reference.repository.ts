@@ -30,6 +30,8 @@ export class ReferenceRepository {
   }
   async listReference1(productId: string): Promise<any> {
     try {
+
+
       return await this.referenceRepository.find({
         where: {
           product: {
@@ -42,6 +44,7 @@ export class ReferenceRepository {
         },
       });
     } catch (error) {
+      console.log(error);
       throw new HttpException(error?.message, HttpStatus.NOT_FOUND);
     }
   }
