@@ -5,6 +5,7 @@ import {
   Body,
   Param,
   Delete,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ReferencesService } from './references.service';
@@ -27,13 +28,19 @@ export class ReferencesController {
   }
 
   @Get(':productId')
-  listReference(@Param('productId') productId: string) {
-    return this.referencesService.listReference(productId);
+  listReference(
+    @Param('productId') productId: string,
+    @Query('provider') provider?: string,
+  ) {
+    return this.referencesService.listReference(productId, provider);
   }
 
   @Get('list/old-model/:productId')
-  listReference1(@Param('productId') productId: string) {
-    return this.referencesService.listReference1(productId);
+  listReference1(
+    @Param('productId') productId: string,
+    @Query('provider') provider?: string,
+  ) {
+    return this.referencesService.listReference1(productId, provider);
   }
 
   @Post('add-reference')

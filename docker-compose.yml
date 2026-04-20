@@ -20,7 +20,7 @@ services:
           "pg_isready",
           "-q",
           "-d",
-          "${DB_DATABASE}",
+          "${DB_NAME}",
           "-U",
           "${DB_USERNAME}"
         ]

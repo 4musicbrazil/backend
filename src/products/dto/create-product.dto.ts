@@ -11,6 +11,9 @@ export class CreateProductDto {
   @ApiProperty({ required: false, default: 'SHD-5asdASDH-asd' })
   readonly platformId: string;
 
+  @ApiProperty({ required: false, default: 'uappi' })
+  readonly provider?: string;
+
   @ApiProperty({ required: false, default: 'SHD-5asdASDH-asd' })
   readonly price: string;
 
@@ -37,6 +40,12 @@ export class CreateProductDto {
     default: 'https://www.product.com.br/sku=123',
   })
   readonly url: string;
+
+  @ApiProperty({
+    required: true,
+    default: 'https://www.product.com.br/sku=123',
+  })
+  readonly externalImageUrl?: string;
 
   @ApiProperty({
     required: true,

@@ -1,4 +1,4 @@
-import { Controller, Get, Headers, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ListUappiService } from './list-uappi.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Roles } from '../auth/decorator/roles.decorator';
@@ -14,7 +14,7 @@ export class ListUappiController {
   @Get()
   @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  findAll(@Headers('Uappi-Token') uappiToken: string) {
-    return this.listUappiService.findAll(uappiToken);
+  findAll() {
+    return this.listUappiService.findAll();
   }
 }

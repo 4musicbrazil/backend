@@ -1,13 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { IntegrationService } from '../integrations/stores/integration.service';
+import { CatalogService } from '../catalog/catalog.service';
 
 @Injectable()
 export class ListUappiService {
-  constructor(private readonly integrationService: IntegrationService) {}
+  constructor(private readonly catalogService: CatalogService) {}
 
-  async findAll(uappiToken: string): Promise<any> {
+  async findAll(): Promise<any> {
     try {
-      return await this.integrationService.findLists(uappiToken);
+      return await this.catalogService.listProducts({
+        provider: 'uappi',
+        page: 1,
+        perPage: 100,
+      });
     } catch (error) {
       throw new HttpException(error?.message, HttpStatus.CONFLICT);
     }

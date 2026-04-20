@@ -5,12 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { ProductInterfaceRepository } from './repository/product.interface.repository';
 import { ProductRepository } from './repository/product.repository';
-import { IntegrationsModule } from '../integrations/integrations.module';
+import { CatalogModule } from '../catalog/catalog.module';
 
 import { StorageService } from '../lib/storage.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product]), IntegrationsModule],
+  imports: [TypeOrmModule.forFeature([Product]), CatalogModule],
   controllers: [ProductsController],
   providers: [
     ProductsService,

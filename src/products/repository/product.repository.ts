@@ -21,9 +21,16 @@ export class ProductRepository {
   }
 
   async findOneByPlatformId(platformId: string): Promise<Product> {
+    return this.findOneByProviderAndPlatformId('uappi', platformId);
+  }
+
+  async findOneByProviderAndPlatformId(
+    provider: string,
+    platformId: string,
+  ): Promise<Product> {
     try {
       return this.productRepository.findOne({
-        where: { platformId: platformId },
+        where: { provider, platformId },
         relations: {
           reference: {
             galleryReference: true,

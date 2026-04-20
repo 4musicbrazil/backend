@@ -11,6 +11,7 @@ import { Gallery } from '../galleries/entities/gallery.entity';
 import { Reference } from '../references/entities/reference.entity';
 
 dotenv.config({ path: './vars/.development.env' });
+const useDbSsl = process.env.DB_SSL == 'TRUE';
 interface DataSourceOptions {
   type: 'postgres';
   host: string;
@@ -23,9 +24,8 @@ interface DataSourceOptions {
   seeds: any;
   synchronize: boolean;
   logging: boolean;
-  ssl: any;
+  ssl?: any;
 }
-console.log(process.env);
 const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
@@ -38,9 +38,13 @@ const dataSourceOptions: DataSourceOptions = {
   seeds: [MainSeeder],
   synchronize: process.env.SYNCHRONIZE == 'TRUE' ? true : false,
   logging: process.env.LOGGING == 'TRUE' ? true : false,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ...(useDbSsl
+    ? {
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      }
+    : {}),
 };
 
 const dataSource = new DataSource(dataSourceOptions);

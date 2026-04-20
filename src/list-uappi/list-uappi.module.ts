@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ListUappiService } from './list-uappi.service';
 import { ListUappiController } from './list-uappi.controller';
-import { IntegrationsModule } from 'src/integrations/integrations.module';
+import { CatalogModule } from '../catalog/catalog.module';
 
 @Module({
-  imports: [IntegrationsModule],
+  imports: [CatalogModule],
   controllers: [ListUappiController],
   providers: [ListUappiService],
 })

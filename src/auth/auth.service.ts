@@ -75,7 +75,6 @@ export class AuthService {
       const userUuid = validateUser?.user?.uuid;
       const token = await this.tokensService.findByUserUuid(userUuid);
       const accessToken = this.jwtService.sign(data);
-      const uappiToken = await this.integrationService.getToken();
       if (!token) {
         this.tokensService.create(accessToken, userUuid);
       } else {
@@ -85,7 +84,6 @@ export class AuthService {
       return {
         user: validateUser.user,
         access_token: accessToken,
-        uappi_token: uappiToken?.token,
         return: true,
       };
     } catch (error) {

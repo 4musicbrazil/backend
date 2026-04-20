@@ -22,6 +22,9 @@ import { Reference } from './references/entities/reference.entity';
 import { Gallery } from './galleries/entities/gallery.entity';
 import { ProductsIntegrationModule } from './products-integration/products-integration.module';
 import { ListUappiModule } from './list-uappi/list-uappi.module';
+import { CatalogModule } from './catalog/catalog.module';
+
+const useDbSsl = process.env.DB_SSL == 'TRUE';
 
 @Module({
   imports: [
@@ -41,9 +44,13 @@ import { ListUappiModule } from './list-uappi/list-uappi.module';
       migrations: [__dirname + '/database/migrations'],
       synchronize: process.env.SYNCHRONIZE == 'TRUE' ? true : false,
       logging: process.env.LOGGING == 'TRUE' ? true : false,
-      ssl: {
-        rejectUnauthorized: false,
-      },
+      ...(useDbSsl
+        ? {
+            ssl: {
+              rejectUnauthorized: false,
+            },
+          }
+        : {}),
     }),
     AuthModule,
     UsersModule,
@@ -55,6 +62,7 @@ import { ListUappiModule } from './list-uappi/list-uappi.module';
     ReferencesModule,
     ProductsIntegrationModule,
     ListUappiModule,
+    CatalogModule,
   ],
   controllers: [AppController],
   providers: [AppService, RolesGuard],

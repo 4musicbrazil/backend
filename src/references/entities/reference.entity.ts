@@ -21,19 +21,15 @@ export class Reference {
 
   @Column({
     name: 'product_id',
-    type: 'varchar',
+    type: 'uuid',
     nullable: true,
-    collation: 'utf8',
-    charset: 'utf8_general_ci',
   })
   productId: string;
 
   @Column({
     name: 'group_id',
-    type: 'varchar',
+    type: 'uuid',
     nullable: true,
-    collation: 'utf8',
-    charset: 'utf8_general_ci',
   })
   groupId: string;
 
@@ -41,8 +37,6 @@ export class Reference {
     name: 'item_reference_id',
     type: 'uuid',
     nullable: true,
-    collation: 'utf8',
-    charset: 'utf8_general_ci',
   })
   itemReferenceId: string;
 

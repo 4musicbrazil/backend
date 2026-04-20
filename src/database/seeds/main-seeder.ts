@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import { runSeeder, Seeder, SeederFactoryManager } from 'typeorm-extension';
 
+import { RoleSeeder } from './role.seed';
 import { UserSeeder } from './user.seed';
 
 export class MainSeeder implements Seeder {
@@ -17,6 +18,7 @@ export class MainSeeder implements Seeder {
     // Truncate tables with postgres tables
     // await connection.query('TRUNCATE TABLE name_table CASCADE ');
 
+    await runSeeder(dataSource, RoleSeeder);
     await runSeeder(dataSource, UserSeeder);
   }
 }

@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Headers,
+  Query,
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
@@ -41,10 +42,19 @@ export class ProductsController {
 
   @Get('get-one/:platfroemId')
   findOneByPlatformId(
-    @Headers('Uappi-Token') uappiToken: string,
+    @Query('provider') provider: string,
     @Param('platfroemId') platfroemId: string,
   ) {
-    return this.productsService.findOneByPlatformId(platfroemId, uappiToken);
+    return this.productsService.findOneByPlatformId(provider, platfroemId);
+  }
+
+  @Post('import/:provider/:externalId')
+  @UseGuards(JwtAuthGuard)
+  importFromCatalog(
+    @Param('provider') provider: string,
+    @Param('externalId') externalId: string,
+  ) {
+    return this.productsService.importFromCatalog(provider, externalId);
   }
 
   @Get(':productUuid')

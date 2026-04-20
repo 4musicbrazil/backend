@@ -28,14 +28,13 @@ export class ReferenceRepository {
       throw new HttpException(error?.message, HttpStatus.NOT_FOUND);
     }
   }
-  async listReference1(productId: string): Promise<any> {
+  async listReference1(productId: string, provider = 'uappi'): Promise<any> {
     try {
-
-
       return await this.referenceRepository.find({
         where: {
           product: {
             platformId: productId,
+            provider,
           },
         },
         relations: {
@@ -48,7 +47,7 @@ export class ReferenceRepository {
       throw new HttpException(error?.message, HttpStatus.NOT_FOUND);
     }
   }
-  async listReference(productId: string): Promise<any> {
+  async listReference(productId: string, provider = 'uappi'): Promise<any> {
     try {
       const result = await this.referenceRepository
         .createQueryBuilder('r')
@@ -67,13 +66,14 @@ export class ReferenceRepository {
         .leftJoin(Product, 'p1', 'p1.uuid = ref.productId')
         .where('r.type = :type', { type: 'audio' })
         .andWhere('p1.platform_id = :platformID', { platformID: productId })
+        .andWhere('p1.provider = :provider', { provider })
 
         .addSelect(
           `json_agg(
         json_build_object(
           'name', p.name,
           'id', p.reference_platform_id,
-          'img', p.uappi_url_image,
+          'img', COALESCE(p.external_image_url, p.uappi_url_image),
           'price', p.price,
            'img2', p.gallery_url,
             'description', p.description

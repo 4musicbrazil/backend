@@ -16,17 +16,23 @@ export class ReferencesService {
     }
   }
 
-  async listReference(productId: string): Promise<any> {
+  async listReference(productId: string, provider?: string): Promise<any> {
     try {
-      return await this.referenceInterfaceRepository.listReference(productId);
+      return await this.referenceInterfaceRepository.listReference(
+        productId,
+        provider,
+      );
     } catch (error) {
       throw new HttpException(error?.message, HttpStatus.CONFLICT);
     }
   }
 
-  async listReference1(productId: string): Promise<any> {
+  async listReference1(productId: string, provider?: string): Promise<any> {
     try {
-      return await this.referenceInterfaceRepository.listReference1(productId);
+      return await this.referenceInterfaceRepository.listReference1(
+        productId,
+        provider,
+      );
     } catch (error) {
       throw new HttpException(error?.message, HttpStatus.CONFLICT);
     }

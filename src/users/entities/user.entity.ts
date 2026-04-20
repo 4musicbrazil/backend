@@ -5,10 +5,8 @@ import { BaseEntity } from '../../database/base.entity';
 export class User extends BaseEntity {
   @Column({
     name: 'role_uuid',
-    type: 'varchar',
-    nullable: true,
-    collation: 'utf8',
-    charset: 'utf8_general_ci',
+    type: 'uuid',
+    nullable: false,
   })
   roleUuid: string;
 

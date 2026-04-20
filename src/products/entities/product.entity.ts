@@ -54,6 +54,15 @@ export class Product {
   platformId: string;
 
   @Column({
+    name: 'provider',
+    type: 'varchar',
+    collation: 'utf8',
+    charset: 'utf8_general_ci',
+    default: 'uappi',
+  })
+  provider: string;
+
+  @Column({
     name: 'reference_platform_id',
     type: 'varchar',
     collation: 'utf8',
@@ -83,7 +92,7 @@ export class Product {
     collation: 'utf8',
     charset: 'utf8_general_ci',
   })
-  readonly sku: string;
+  sku: string;
 
   @Column({
     name: 'category',
@@ -91,7 +100,7 @@ export class Product {
     collation: 'utf8',
     charset: 'utf8_general_ci',
   })
-  readonly category: string;
+  category: string;
 
   @Column({
     name: 'status',
@@ -111,10 +120,20 @@ export class Product {
   url: string;
 
   @Column({
+    name: 'external_image_url',
+    type: 'varchar',
+    collation: 'utf8',
+    charset: 'utf8_general_ci',
+    nullable: true,
+  })
+  externalImageUrl: string;
+
+  @Column({
     name: 'uappi_url_image',
     type: 'varchar',
     collation: 'utf8',
     charset: 'utf8_general_ci',
+    nullable: true,
   })
   uappiUrlImage: string;
 
