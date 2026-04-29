@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 
 import {
   CatalogProviderType,
-  DEFAULT_CATALOG_PROVIDER,
+  getDefaultCatalogProvider,
 } from './enums/catalog-provider.enum';
 import { CatalogListResult, CatalogProduct } from './interfaces/catalog-product.interface';
 import { CatalogProvider } from './interfaces/catalog-provider.interface';
@@ -26,7 +26,7 @@ export class CatalogService {
   normalizeProvider(provider?: string): CatalogProviderType {
     const normalized =
       (provider?.toLowerCase() as CatalogProviderType) ??
-      DEFAULT_CATALOG_PROVIDER;
+      getDefaultCatalogProvider();
 
     if (!this.providers[normalized]) {
       throw new BadRequestException(`Unsupported catalog provider: ${provider}`);
@@ -75,4 +75,3 @@ export class CatalogService {
     return this.getProvider(provider).getProductById(externalId);
   }
 }
-

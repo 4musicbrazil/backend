@@ -3,7 +3,12 @@ export enum CatalogProviderType {
   OLIST = 'olist',
 }
 
-export const DEFAULT_CATALOG_PROVIDER =
-  (process.env.DEFAULT_CATALOG_PROVIDER as CatalogProviderType) ??
-  CatalogProviderType.UAPPI;
+export const getDefaultCatalogProvider = (): CatalogProviderType => {
+  const provider = process.env.DEFAULT_CATALOG_PROVIDER?.toLowerCase();
 
+  if (provider === CatalogProviderType.OLIST) {
+    return CatalogProviderType.OLIST;
+  }
+
+  return CatalogProviderType.UAPPI;
+};

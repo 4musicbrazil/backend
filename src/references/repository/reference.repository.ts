@@ -93,7 +93,32 @@ export class ReferenceRepository {
 
   async addReference(createReferenceDto: CreateReferenceDto): Promise<any> {
     try {
-      console.log(createReferenceDto);
+      const existingReferenceQuery = this.referenceRepository
+        .createQueryBuilder('reference')
+        .where('reference.productId = :productId', {
+          productId: createReferenceDto.productId,
+        })
+        .andWhere('reference.itemReferenceId = :itemReferenceId', {
+          itemReferenceId: createReferenceDto.itemReferenceId,
+        })
+        .andWhere('reference.type = :type', {
+          type: createReferenceDto.type,
+        });
+
+      if (createReferenceDto.groupId) {
+        existingReferenceQuery.andWhere('reference.groupId = :groupId', {
+          groupId: createReferenceDto.groupId,
+        });
+      } else {
+        existingReferenceQuery.andWhere('reference.groupId IS NULL');
+      }
+
+      const existingReference = await existingReferenceQuery.getOne();
+
+      if (existingReference) {
+        return existingReference;
+      }
+
       return await this.referenceRepository.save(createReferenceDto);
     } catch (error) {
       throw new HttpException(error?.message, HttpStatus.NOT_FOUND);

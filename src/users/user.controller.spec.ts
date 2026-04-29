@@ -59,7 +59,12 @@ describe('UserController', () => {
   });
   describe('findAll', () => {
     it('should return a todo list entity successfully', async () => {
-      const result = await userController.findAll();
+      const result = await userController.findAll(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+      );
 
       expect(result).toEqual([userData]);
       expect(typeof result).toEqual('object');
@@ -69,7 +74,9 @@ describe('UserController', () => {
     it('should throw an exception', () => {
       jest.spyOn(userService, 'findAll').mockRejectedValueOnce(new Error());
 
-      expect(userController.findAll()).rejects.toThrowError();
+      expect(
+        userController.findAll(undefined, undefined, undefined, undefined),
+      ).rejects.toThrowError();
     });
   });
 });

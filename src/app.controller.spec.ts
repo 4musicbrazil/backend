@@ -15,8 +15,13 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return api metadata for the home page', () => {
+      expect(appController.homePage()).toEqual({
+        API_NAME: process.env.API_NAME,
+        API_VERSION: process.env.API_VERSION,
+        API_YEAR: process.env.API_YEAR,
+        ENVIRONMENT: process.env.ENVIRONMENT,
+      });
     });
   });
 });

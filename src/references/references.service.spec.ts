@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ReferenceInterfaceRepository } from './repository/reference.interface.repository';
 import { ReferencesService } from './references.service';
 
 describe('ReferencesService', () => {
@@ -6,7 +7,13 @@ describe('ReferencesService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ReferencesService],
+      providers: [
+        ReferencesService,
+        {
+          provide: ReferenceInterfaceRepository,
+          useValue: {},
+        },
+      ],
     }).compile();
 
     service = module.get<ReferencesService>(ReferencesService);

@@ -8,7 +8,12 @@ describe('ReferencesController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ReferencesController],
-      providers: [ReferencesService],
+      providers: [
+        {
+          provide: ReferencesService,
+          useValue: {},
+        },
+      ],
     }).compile();
 
     controller = module.get<ReferencesController>(ReferencesController);

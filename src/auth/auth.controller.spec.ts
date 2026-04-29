@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { ForgetService } from './forget.service';
+import { RefreshTokenService } from './refresh-token.service';
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -14,6 +16,14 @@ describe('AuthController', () => {
           useValue: {
             googleLogin: jest.fn(),
           },
+        },
+        {
+          provide: RefreshTokenService,
+          useValue: {},
+        },
+        {
+          provide: ForgetService,
+          useValue: {},
         },
       ],
     }).compile();

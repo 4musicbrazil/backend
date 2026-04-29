@@ -8,7 +8,12 @@ describe('ListUappiController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ListUappiController],
-      providers: [ListUappiService],
+      providers: [
+        {
+          provide: ListUappiService,
+          useValue: {},
+        },
+      ],
     }).compile();
 
     controller = module.get<ListUappiController>(ListUappiController);
