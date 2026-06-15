@@ -1,4 +1,9 @@
-import { BadGatewayException, Injectable } from '@nestjs/common';
+import {
+  BadGatewayException,
+  HttpException,
+  Injectable,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 
 import ApiService from '../../configs/api.service';
 import { CatalogProviderType } from '../enums/catalog-provider.enum';
@@ -11,6 +16,7 @@ import { CatalogProduct } from '../interfaces/catalog-product.interface';
 @Injectable()
 export class OlistCatalogProvider implements CatalogProvider {
   readonly type = CatalogProviderType.OLIST;
+  private readonly requestTimeout = 15000;
 
   private readonly baseUrl = this.normalizeBaseUrl(
     process.env.OLIST_API_URL ?? 'https://api.vnda.com.br',
@@ -29,6 +35,10 @@ export class OlistCatalogProvider implements CatalogProvider {
   }
 
   private handleRequestError(error: any): never {
+    if (error instanceof HttpException) {
+      throw error;
+    }
+
     const status = error?.response?.status;
     const upstreamMessage =
       error?.response?.data?.error ??
@@ -44,13 +54,41 @@ export class OlistCatalogProvider implements CatalogProvider {
   }
 
   private buildHeaders() {
+    this.validateConfiguration();
+
     return {
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${this.token}`,
         'X-Shop-Host': this.shopHost,
       },
+      timeout: this.requestTimeout,
     };
+  }
+
+  private validateConfiguration() {
+    const missingVariables = [
+      !this.token ? 'OLIST_API_TOKEN' : null,
+      !this.shopHost ? 'OLIST_SHOP_HOST' : null,
+    ].filter(Boolean);
+
+    if (missingVariables.length) {
+      throw new ServiceUnavailableException({
+        provider: this.type,
+        message: `Missing Olist configuration: ${missingVariables.join(', ')}`,
+      });
+    }
+
+    const isSandboxApi = this.baseUrl.includes('sandbox.vnda.com.br');
+    const isDevelopmentShop = this.shopHost.endsWith('.vnda.dev');
+
+    if (isSandboxApi !== isDevelopmentShop) {
+      throw new ServiceUnavailableException({
+        provider: this.type,
+        message:
+          'OLIST_API_URL and OLIST_SHOP_HOST must both target production or both target sandbox',
+      });
+    }
   }
 
   private mapProduct(product: any): CatalogProduct {
@@ -80,7 +118,6 @@ export class OlistCatalogProvider implements CatalogProvider {
         '',
       productUrl: product?.url ?? '',
       adminUrl: this.buildAdminUrl(externalId),
-      raw: product,
     };
   }
 
@@ -121,7 +158,7 @@ export class OlistCatalogProvider implements CatalogProvider {
     const client = this.buildClient();
     try {
       const response: any = await client.get(
-        `/api/v2/products?page=${query.page}&per_page=${query.perPage}&include_inactive=true`,
+        `/api/v2/products?page=${query.page}&per_page=${query.perPage}&include_inactive=true&include_images=false`,
         this.buildHeaders(),
       );
 
@@ -137,7 +174,7 @@ export class OlistCatalogProvider implements CatalogProvider {
     try {
       const search = encodeURIComponent(query.search ?? '');
       const response: any = await client.get(
-        `/api/v2/products/search?page=${query.page}&per_page=${query.perPage}&include_inactive=true&query=${search}&search=${search}&q=${search}&term=${search}`,
+        `/api/v2/products/search?page=${query.page}&per_page=${query.perPage}&include_inactive=true&include_images=false&query=${search}&search=${search}&q=${search}&term=${search}`,
         this.buildHeaders(),
       );
       const items = this.extractItems(response);

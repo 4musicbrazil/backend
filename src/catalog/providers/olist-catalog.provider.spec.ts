@@ -1,0 +1,56 @@
+import { ServiceUnavailableException } from '@nestjs/common';
+
+import { OlistCatalogProvider } from './olist-catalog.provider';
+
+describe('OlistCatalogProvider', () => {
+  const originalEnvironment = process.env;
+
+  afterEach(() => {
+    process.env = originalEnvironment;
+  });
+
+  it('rejects mixed production and sandbox configuration', async () => {
+    process.env = {
+      ...originalEnvironment,
+      OLIST_API_URL: 'https://api.vnda.com.br',
+      OLIST_API_TOKEN: 'token',
+      OLIST_SHOP_HOST: 'fourmusic.vnda.dev',
+    };
+    const provider = new OlistCatalogProvider();
+
+    await expect(
+      provider.listProducts({ page: 1, perPage: 1 }),
+    ).rejects.toBeInstanceOf(ServiceUnavailableException);
+  });
+
+  it('rejects missing credentials before making a request', async () => {
+    process.env = {
+      ...originalEnvironment,
+      OLIST_API_URL: 'https://api.vnda.com.br',
+      OLIST_API_TOKEN: '',
+      OLIST_SHOP_HOST: '',
+    };
+    const provider = new OlistCatalogProvider();
+
+    await expect(
+      provider.listProducts({ page: 1, perPage: 1 }),
+    ).rejects.toBeInstanceOf(ServiceUnavailableException);
+  });
+
+  it('does not expose the complete upstream product in the catalog response', () => {
+    process.env = {
+      ...originalEnvironment,
+      OLIST_API_URL: 'https://api.vnda.com.br',
+      OLIST_API_TOKEN: 'token',
+      OLIST_SHOP_HOST: 'www.4music.com.br',
+    };
+    const provider = new OlistCatalogProvider();
+    const product = (provider as any).mapProduct({
+      id: 123,
+      name: 'Product',
+      variants: [{ id: 456 }],
+    });
+
+    expect(product).not.toHaveProperty('raw');
+  });
+});
