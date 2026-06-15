@@ -17,7 +17,8 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<any> {
-    const userEmail: string | boolean = createUserDto?.email ?? false;
+    const normalizedEmail = createUserDto?.email?.trim().toLowerCase();
+    const userEmail: string | boolean = normalizedEmail ?? false;
 
     const exists = await this.userInterfaceRepository.existsByUuidOrEmail(
       false,
@@ -31,6 +32,8 @@ export class UsersService {
     try {
       const userData = {
         ...createUserDto,
+        email: normalizedEmail,
+        fullName: createUserDto.fullName.trim(),
         roleUuid: role.uuid,
         password: await this.hashPassword(createUserDto.password),
       };

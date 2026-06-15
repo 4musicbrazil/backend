@@ -16,8 +16,8 @@ export class LoginDto {
   @MinLength(8, {
     message: 'Your password needs to contain at least 8 characters',
   })
-  @MaxLength(16, {
-    message: 'Your password needs to contain at most 16 characters',
+  @MaxLength(72, {
+    message: 'Your password needs to contain at most 72 characters',
   })
   @IsNotEmpty()
   @IsString()

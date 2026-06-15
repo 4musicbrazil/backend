@@ -55,7 +55,7 @@ export class AuthService {
   async login(login: LoginDto): Promise<any> {
     try {
       const validateUser = await this.validateUser(
-        login?.email,
+        login?.email?.trim().toLowerCase(),
         login?.password,
       );
 
@@ -87,8 +87,10 @@ export class AuthService {
         return: true,
       };
     } catch (error) {
-      console.log(error);
-      throw new HttpException(error?.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        error?.message ?? 'Unable to authenticate',
+        error?.status ?? HttpStatus.UNAUTHORIZED,
+      );
     }
   }
   async uappiRefresh(): Promise<any> {

@@ -30,12 +30,13 @@ export class UserRepository {
   }
   async findOneByEmail(email: string, withPassword: boolean): Promise<User> {
     try {
-      if (withPassword) {
-        this.props.select = [...this.props.select, 'password'];
-      }
+      const select: (keyof User)[] = withPassword
+        ? [...(USER_FIELDS as (keyof User)[]), 'password']
+        : [...(USER_FIELDS as (keyof User)[])];
+
       return this.userRepository.findOne({
-        where: { email: email },
-        ...this.props,
+        where: { email: ILike(email) },
+        select,
       });
     } catch (error) {
       throw new HttpException(error?.message, HttpStatus.NOT_FOUND);
