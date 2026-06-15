@@ -5,6 +5,7 @@ import { Reference } from '../entities/reference.entity';
 import { CreateReferenceDto } from '../dto/create-reference.dto';
 import { Gallery } from '../../galleries/entities/gallery.entity';
 import { Product } from '../../products/entities/product.entity';
+import { getDefaultCatalogProvider } from '../../catalog/enums/catalog-provider.enum';
 
 @Injectable()
 export class ReferenceRepository {
@@ -28,7 +29,10 @@ export class ReferenceRepository {
       throw new HttpException(error?.message, HttpStatus.NOT_FOUND);
     }
   }
-  async listReference1(productId: string, provider = 'uappi'): Promise<any> {
+  async listReference1(
+    productId: string,
+    provider = getDefaultCatalogProvider(),
+  ): Promise<any> {
     try {
       return await this.referenceRepository.find({
         where: {
@@ -47,7 +51,10 @@ export class ReferenceRepository {
       throw new HttpException(error?.message, HttpStatus.NOT_FOUND);
     }
   }
-  async listReference(productId: string, provider = 'uappi'): Promise<any> {
+  async listReference(
+    productId: string,
+    provider = getDefaultCatalogProvider(),
+  ): Promise<any> {
     try {
       const result = await this.referenceRepository
         .createQueryBuilder('r')
@@ -63,7 +70,7 @@ export class ReferenceRepository {
         .leftJoin(Gallery, 'g', 'g.uuid = r.item_reference_id')
         .leftJoin(Reference, 'ref', 'ref.group_id = g.uuid')
         .leftJoin(Product, 'p', 'p.uuid = ref.item_reference_id')
-        .leftJoin(Product, 'p1', 'p1.uuid = ref.productId')
+        .leftJoin(Product, 'p1', 'p1.uuid = r.productId')
         .where('r.type = :type', { type: 'audio' })
         .andWhere('p1.platform_id = :platformID', { platformID: productId })
         .andWhere('p1.provider = :provider', { provider })
@@ -73,6 +80,7 @@ export class ReferenceRepository {
         json_build_object(
           'name', p.name,
           'id', p.reference_platform_id,
+          'provider', p.provider,
           'img', COALESCE(p.external_image_url, p.uappi_url_image),
           'price', p.price,
            'img2', p.gallery_url,

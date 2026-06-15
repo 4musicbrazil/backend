@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateReferenceDto } from './dto/create-reference.dto';
 import { ReferenceInterfaceRepository } from './repository/reference.interface.repository';
+import { getDefaultCatalogProvider } from '../catalog/enums/catalog-provider.enum';
 
 @Injectable()
 export class ReferencesService {
@@ -20,7 +21,7 @@ export class ReferencesService {
     try {
       return await this.referenceInterfaceRepository.listReference(
         productId,
-        provider,
+        provider ?? getDefaultCatalogProvider(),
       );
     } catch (error) {
       throw new HttpException(error?.message, HttpStatus.CONFLICT);
@@ -31,7 +32,7 @@ export class ReferencesService {
     try {
       return await this.referenceInterfaceRepository.listReference1(
         productId,
-        provider,
+        provider ?? getDefaultCatalogProvider(),
       );
     } catch (error) {
       throw new HttpException(error?.message, HttpStatus.CONFLICT);
