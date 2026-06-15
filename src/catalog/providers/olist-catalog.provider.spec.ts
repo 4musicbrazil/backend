@@ -4,12 +4,14 @@ import {
   ServiceUnavailableException,
 } from '@nestjs/common';
 
+import ApiService from '../../configs/api.service';
 import { OlistCatalogProvider } from './olist-catalog.provider';
 
 describe('OlistCatalogProvider', () => {
   const originalEnvironment = process.env;
 
   afterEach(() => {
+    jest.restoreAllMocks();
     process.env = originalEnvironment;
   });
 
@@ -90,5 +92,27 @@ describe('OlistCatalogProvider', () => {
     expect((provider as any).baseUrl).toBe('https://api.vnda.com.br');
     expect(request.headers.Authorization).toBe('Bearer token');
     expect(request.headers['X-Shop-Host']).toBe('www.4music.com.br');
+  });
+
+  it('searches products using the Olist term parameter', async () => {
+    process.env = {
+      ...originalEnvironment,
+      OLIST_API_URL: 'https://api.vnda.com.br',
+      OLIST_API_TOKEN: 'token',
+      OLIST_SHOP_HOST: 'www.4music.com.br',
+    };
+    const get = jest.spyOn(ApiService.prototype, 'get').mockResolvedValue([]);
+    const provider = new OlistCatalogProvider();
+
+    await provider.searchProducts({
+      page: 2,
+      perPage: 25,
+      search: 'violao azul',
+    });
+
+    expect(get).toHaveBeenCalledWith(
+      '/api/v2/products/search?term=violao%20azul&page=2&per_page=25&include_inactive=true&include_images=false',
+      expect.any(Object),
+    );
   });
 });

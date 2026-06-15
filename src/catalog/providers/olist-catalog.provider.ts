@@ -202,7 +202,7 @@ export class OlistCatalogProvider implements CatalogProvider {
     try {
       const search = encodeURIComponent(query.search ?? '');
       const response: any = await client.get(
-        `/api/v2/products/search?page=${query.page}&per_page=${query.perPage}&include_inactive=true&include_images=false&query=${search}&search=${search}&q=${search}&term=${search}`,
+        `/api/v2/products/search?term=${search}&page=${query.page}&per_page=${query.perPage}&include_inactive=true&include_images=false`,
         this.buildHeaders(),
       );
       const items = this.extractItems(response);
