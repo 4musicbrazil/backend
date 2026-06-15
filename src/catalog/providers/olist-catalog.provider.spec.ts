@@ -1,4 +1,8 @@
-import { ServiceUnavailableException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 
 import { OlistCatalogProvider } from './olist-catalog.provider';
 
@@ -52,5 +56,24 @@ describe('OlistCatalogProvider', () => {
     });
 
     expect(product).not.toHaveProperty('raw');
+  });
+
+  it('returns failed dependency for upstream errors', () => {
+    const provider = new OlistCatalogProvider();
+    let thrownError: HttpException;
+
+    try {
+      (provider as any).handleRequestError({
+        response: {
+          status: 401,
+          data: { message: 'Unauthorized' },
+        },
+      });
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toBeInstanceOf(HttpException);
+    expect(thrownError.getStatus()).toBe(HttpStatus.FAILED_DEPENDENCY);
   });
 });

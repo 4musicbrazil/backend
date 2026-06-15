@@ -1,7 +1,8 @@
 import {
-  BadGatewayException,
   HttpException,
+  HttpStatus,
   Injectable,
+  Logger,
   ServiceUnavailableException,
 } from '@nestjs/common';
 
@@ -17,6 +18,7 @@ import { CatalogProduct } from '../interfaces/catalog-product.interface';
 export class OlistCatalogProvider implements CatalogProvider {
   readonly type = CatalogProviderType.OLIST;
   private readonly requestTimeout = 15000;
+  private readonly logger = new Logger(OlistCatalogProvider.name);
 
   private readonly baseUrl = this.normalizeBaseUrl(
     process.env.OLIST_API_URL ?? 'https://api.vnda.com.br',
@@ -45,12 +47,21 @@ export class OlistCatalogProvider implements CatalogProvider {
       error?.response?.data?.message ??
       error?.message ??
       'Unable to reach Olist catalog';
+    const code = error?.code;
 
-    throw new BadGatewayException({
-      provider: this.type,
-      status,
-      message: upstreamMessage,
-    });
+    this.logger.error(
+      `Olist request failed: status=${status ?? 'none'} code=${code ?? 'none'} host=${this.shopHost || 'missing'} api=${this.baseUrl}`,
+    );
+
+    throw new HttpException(
+      {
+        provider: this.type,
+        upstreamStatus: status,
+        code,
+        message: upstreamMessage,
+      },
+      HttpStatus.FAILED_DEPENDENCY,
+    );
   }
 
   private buildHeaders() {
