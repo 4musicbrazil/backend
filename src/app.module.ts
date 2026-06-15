@@ -24,7 +24,7 @@ import { ProductsIntegrationModule } from './products-integration/products-integ
 import { ListUappiModule } from './list-uappi/list-uappi.module';
 import { CatalogModule } from './catalog/catalog.module';
 
-const useDbSsl = process.env.DB_SSL == 'TRUE';
+const useDbSsl = process.env.DB_SSL?.toUpperCase() !== 'FALSE';
 
 @Module({
   imports: [

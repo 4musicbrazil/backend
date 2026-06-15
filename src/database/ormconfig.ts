@@ -11,7 +11,7 @@ import { Gallery } from '../galleries/entities/gallery.entity';
 import { Reference } from '../references/entities/reference.entity';
 
 dotenv.config({ path: './vars/.development.env' });
-const useDbSsl = process.env.DB_SSL == 'TRUE';
+const useDbSsl = process.env.DB_SSL?.toUpperCase() !== 'FALSE';
 interface DataSourceOptions {
   type: 'postgres';
   host: string;
