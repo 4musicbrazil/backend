@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  Headers,
   Query,
   UseInterceptors,
   UploadedFile,
@@ -41,6 +40,8 @@ export class ProductsController {
   }
 
   @Get('get-one/:platfroemId')
+  @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   findOneByPlatformId(
     @Query('provider') provider: string,
     @Param('platfroemId') platfroemId: string,
@@ -49,7 +50,8 @@ export class ProductsController {
   }
 
   @Post('import/:provider/:externalId')
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   importFromCatalog(
     @Param('provider') provider: string,
     @Param('externalId') externalId: string,

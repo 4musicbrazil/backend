@@ -34,4 +34,3 @@ export class CatalogController {
     return this.catalogService.getProductById(provider, externalId);
   }
 }
-

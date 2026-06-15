@@ -6,7 +6,6 @@ export interface CatalogQuery {
   perPage: number;
   search?: string;
 }
-
 export interface CatalogProvider {
   readonly type: CatalogProviderType;
   listProducts(query: CatalogQuery): Promise<CatalogProduct[]>;
@@ -14,4 +13,3 @@ export interface CatalogProvider {
   getProductById(externalId: string): Promise<CatalogProduct>;
   buildAdminUrl(externalId: string): string;
 }
-

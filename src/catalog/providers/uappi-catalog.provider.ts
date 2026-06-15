@@ -151,4 +151,3 @@ export class UappiCatalogProvider implements CatalogProvider {
     return `${this.adminBaseUrl}/${externalId}`;
   }
 }
-

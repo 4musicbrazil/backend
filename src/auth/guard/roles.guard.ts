@@ -23,6 +23,12 @@ export class RolesGuard implements CanActivate {
       return false;
     }
 
-    return requiredRoles.some((role) => 'admin' === role);
+    const userRole = user.role?.name;
+
+    if (userRole === Role.OWNER) {
+      return true;
+    }
+
+    return requiredRoles.includes(userRole);
   }
 }

@@ -11,4 +11,3 @@ import { UappiCatalogProvider } from './providers/uappi-catalog.provider';
   exports: [CatalogService],
 })
 export class CatalogModule {}
-

@@ -7,6 +7,10 @@ import { User } from '../../users/entities/user.entity';
 
 export class UserSeeder implements Seeder {
   private readonly SALT_OR_ROUNDS = +process.env.SALT_OR_ROUNDS;
+  private readonly email = process.env.SEED_OWNER_EMAIL;
+  private readonly password = process.env.SEED_OWNER_PASSWORD;
+  private readonly fullName =
+    process.env.SEED_OWNER_FULL_NAME ?? 'App4Music Owner';
 
   async run(
     dataSource: DataSource,
@@ -15,8 +19,14 @@ export class UserSeeder implements Seeder {
     const userRepository = dataSource.getRepository(User);
     const roleRepository = dataSource.getRepository(Role);
 
+    if (!this.email || !this.password) {
+      throw new Error(
+        'SEED_OWNER_EMAIL and SEED_OWNER_PASSWORD are required to seed the owner user',
+      );
+    }
+
     const existingUser = await userRepository.findOne({
-      where: { email: 'jhoeDue@example.com' },
+      where: { email: this.email },
     });
     if (existingUser) {
       return;
@@ -30,10 +40,10 @@ export class UserSeeder implements Seeder {
     }
 
     const newUser = userRepository.create({
-      email: 'jhoeDue@example.com',
-      fullName: 'App4Music Owner',
+      email: this.email,
+      fullName: this.fullName,
       roleUuid: ownerRole.uuid,
-      password: await this.hashPassword('Password1!'),
+      password: await this.hashPassword(this.password),
     });
 
     await userRepository.save(newUser);

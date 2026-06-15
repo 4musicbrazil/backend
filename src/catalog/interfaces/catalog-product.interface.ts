@@ -13,11 +13,9 @@ export interface CatalogProduct {
   adminUrl: string;
   raw?: any;
 }
-
 export interface CatalogListResult {
   provider: CatalogProviderType;
   page: number;
   perPage: number;
   items: CatalogProduct[];
 }
-
