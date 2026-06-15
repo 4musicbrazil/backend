@@ -21,12 +21,16 @@ export class OlistCatalogProvider implements CatalogProvider {
   private readonly logger = new Logger(OlistCatalogProvider.name);
 
   private readonly baseUrl = this.normalizeBaseUrl(
-    process.env.OLIST_API_URL ?? 'https://api.vnda.com.br',
+    this.normalizeEnvironmentValue(process.env.OLIST_API_URL) ??
+      'https://api.vnda.com.br',
   );
-  private readonly token = process.env.OLIST_API_TOKEN ?? '';
-  private readonly shopHost = process.env.OLIST_SHOP_HOST ?? '';
+  private readonly token =
+    this.normalizeEnvironmentValue(process.env.OLIST_API_TOKEN) ?? '';
+  private readonly shopHost =
+    this.normalizeEnvironmentValue(process.env.OLIST_SHOP_HOST) ?? '';
   private readonly adminBaseUrl =
-    process.env.OLIST_ADMIN_BASE_URL ?? 'https://app.olist.com/products';
+    this.normalizeEnvironmentValue(process.env.OLIST_ADMIN_BASE_URL) ??
+    'https://app.olist.com/products';
 
   private buildClient() {
     return new ApiService(this.baseUrl);
@@ -34,6 +38,19 @@ export class OlistCatalogProvider implements CatalogProvider {
 
   private normalizeBaseUrl(baseUrl: string) {
     return baseUrl.replace(/\/+$/, '').replace(/\/api\/v2$/, '');
+  }
+
+  private normalizeEnvironmentValue(value?: string) {
+    const normalized = value?.trim();
+    if (!normalized) {
+      return undefined;
+    }
+
+    const hasWrappingQuotes =
+      (normalized.startsWith('"') && normalized.endsWith('"')) ||
+      (normalized.startsWith("'") && normalized.endsWith("'"));
+
+    return hasWrappingQuotes ? normalized.slice(1, -1).trim() : normalized;
   }
 
   private handleRequestError(error: any): never {

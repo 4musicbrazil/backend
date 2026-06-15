@@ -76,4 +76,19 @@ describe('OlistCatalogProvider', () => {
     expect(thrownError).toBeInstanceOf(HttpException);
     expect(thrownError.getStatus()).toBe(HttpStatus.FAILED_DEPENDENCY);
   });
+
+  it('removes accidental spaces and wrapping quotes from configuration', () => {
+    process.env = {
+      ...originalEnvironment,
+      OLIST_API_URL: ' "https://api.vnda.com.br/api/v2" ',
+      OLIST_API_TOKEN: ' "token" ',
+      OLIST_SHOP_HOST: " 'www.4music.com.br' ",
+    };
+    const provider = new OlistCatalogProvider();
+    const request = (provider as any).buildHeaders();
+
+    expect((provider as any).baseUrl).toBe('https://api.vnda.com.br');
+    expect(request.headers.Authorization).toBe('Bearer token');
+    expect(request.headers['X-Shop-Host']).toBe('www.4music.com.br');
+  });
 });
