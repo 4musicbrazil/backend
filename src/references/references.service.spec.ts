@@ -45,6 +45,14 @@ describe('ReferencesService', () => {
     expect(repository.listReference).toHaveBeenCalledWith('1044', 'olist');
   });
 
+  it('uses Olist as the fallback default provider', async () => {
+    repository.listReference.mockResolvedValue([]);
+
+    await service.listReference('1044');
+
+    expect(repository.listReference).toHaveBeenCalledWith('1044', 'olist');
+  });
+
   it('keeps an explicitly provided provider', async () => {
     repository.listReference1.mockResolvedValue([]);
 

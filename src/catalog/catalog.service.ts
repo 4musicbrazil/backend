@@ -48,12 +48,13 @@ export class CatalogService {
     const provider = this.normalizeProvider(params.provider);
     const page = params.page && params.page > 0 ? params.page : 1;
     const perPage = params.perPage && params.perPage > 0 ? params.perPage : 100;
+    const search = params.search?.trim();
     const providerService = this.getProvider(provider);
-    const items = params.search
+    const items = search
       ? await providerService.searchProducts({
           page,
           perPage,
-          search: params.search,
+          search,
         })
       : await providerService.listProducts({
           page,
