@@ -14,6 +14,9 @@ export class CreateGalleryDto {
   @ApiProperty({ required: false, default: 'Nome' })
   readonly name: string;
 
+  @ApiProperty({ required: false, default: 'Nome interno' })
+  readonly internalName: string;
+
   @ApiProperty({ required: false, default: '0:14' })
   readonly duration: string;
 

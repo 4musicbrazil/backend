@@ -37,12 +37,23 @@ export class GalleryRepository {
   ): Promise<any> {
     try {
       const where: Array<object> = [];
-      if (type && type != null && type != 'null') {
-        where.push({ type: type });
-      }
-      if (search && search.trim() !== '' && search != 'null') {
-        where.push({ name: ILike(`%${search}%`) });
-        where.push({ type: ILike(`%${type}%`) });
+      const typeFilter = type && type != null && type != 'null' ? type : null;
+      const searchFilter =
+        search && search.trim() !== '' && search != 'null'
+          ? search.trim()
+          : null;
+
+      if (typeFilter && searchFilter) {
+        where.push({ type: typeFilter, name: ILike(`%${searchFilter}%`) });
+        where.push({
+          type: typeFilter,
+          internalName: ILike(`%${searchFilter}%`),
+        });
+      } else if (typeFilter) {
+        where.push({ type: typeFilter });
+      } else if (searchFilter) {
+        where.push({ name: ILike(`%${searchFilter}%`) });
+        where.push({ internalName: ILike(`%${searchFilter}%`) });
       }
 
       const [galleries, total] = await this.galleryRepository.findAndCount({

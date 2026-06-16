@@ -26,6 +26,15 @@ export class Gallery {
   name: string;
 
   @Column({
+    name: 'internal_name',
+    type: 'varchar',
+    nullable: true,
+    collation: 'utf8',
+    charset: 'utf8_general_ci',
+  })
+  internalName: string;
+
+  @Column({
     name: 'duration',
     type: 'varchar',
     nullable: true,

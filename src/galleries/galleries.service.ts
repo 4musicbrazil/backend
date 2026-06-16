@@ -60,7 +60,7 @@ export class GalleriesService {
     file: Express.Multer.File,
     updateGalleryDto: UpdateGalleryDto,
   ): Promise<any> {
-    const { name, description } = updateGalleryDto;
+    const { name, internalName, description } = updateGalleryDto;
     try {
       const gallery = await this.galleryInterfaceRepository.findOne(
         galleriesUuid,
@@ -79,6 +79,10 @@ export class GalleriesService {
 
       if (name) {
         gallery.name = name;
+      }
+
+      if (internalName !== undefined) {
+        gallery.internalName = internalName || null;
       }
 
       if (description) {
