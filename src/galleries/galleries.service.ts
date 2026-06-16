@@ -25,7 +25,8 @@ export class GalleriesService {
       };
       return await this.galleryInterfaceRepository.create(galeryData);
     } catch (error) {
-      throw new HttpException(error?.message, HttpStatus.CONTINUE);
+      if (error instanceof HttpException) throw error;
+      throw new HttpException(error?.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -43,7 +44,8 @@ export class GalleriesService {
         take,
       );
     } catch (error) {
-      throw new HttpException(error?.message, HttpStatus.CONTINUE);
+      if (error instanceof HttpException) throw error;
+      throw new HttpException(error?.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -51,7 +53,8 @@ export class GalleriesService {
     try {
       return await this.galleryInterfaceRepository.findOne(galleriesUuid);
     } catch (error) {
-      throw new HttpException(error?.message, HttpStatus.CONTINUE);
+      if (error instanceof HttpException) throw error;
+      throw new HttpException(error?.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -91,7 +94,8 @@ export class GalleriesService {
 
       return await this.galleryInterfaceRepository.update(gallery);
     } catch (error) {
-      throw new HttpException(error?.message, HttpStatus.CONTINUE);
+      if (error instanceof HttpException) throw error;
+      throw new HttpException(error?.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
   async remove(galleriesUuid: string): Promise<any> {
@@ -106,7 +110,8 @@ export class GalleriesService {
       await this.storageService.deleteFile(gallery.galleryKey);
       return await this.galleryInterfaceRepository.remove(gallery);
     } catch (error) {
-      throw new HttpException(error?.message, HttpStatus.CONTINUE);
+      if (error instanceof HttpException) throw error;
+      throw new HttpException(error?.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
