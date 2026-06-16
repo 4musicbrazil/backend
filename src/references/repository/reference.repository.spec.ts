@@ -42,7 +42,7 @@ describe('ReferenceRepository', () => {
     expect(queryBuilder.leftJoin).toHaveBeenCalledWith(
       Product,
       'p1',
-      'p1.uuid::text = r.productId',
+      'p1.uuid = r.productId',
     );
     expect(queryBuilder.addSelect).toHaveBeenCalledWith(
       expect.stringContaining("'provider', p.provider"),

@@ -22,13 +22,13 @@ export class ReferenceRepository {
           'reference.galleryReference',
           Gallery,
           'galleryReference',
-          'galleryReference.uuid::text = reference.itemReferenceId',
+          'galleryReference.uuid = reference.itemReferenceId',
         )
         .leftJoinAndMapOne(
           'reference.productReference',
           Product,
           'productReference',
-          'productReference.uuid::text = reference.itemReferenceId',
+          'productReference.uuid = reference.itemReferenceId',
         )
         .where('reference.uuid = :productId', { productId })
         .getMany();
@@ -43,22 +43,18 @@ export class ReferenceRepository {
     try {
       return await this.referenceRepository
         .createQueryBuilder('reference')
-        .innerJoin(
-          Product,
-          'product',
-          'product.uuid::text = reference.productId',
-        )
+        .innerJoin(Product, 'product', 'product.uuid = reference.productId')
         .leftJoinAndMapOne(
           'reference.galleryReference',
           Gallery,
           'galleryReference',
-          'galleryReference.uuid::text = reference.itemReferenceId',
+          'galleryReference.uuid = reference.itemReferenceId',
         )
         .leftJoinAndMapOne(
           'reference.productReference',
           Product,
           'productReference',
-          'productReference.uuid::text = reference.itemReferenceId',
+          'productReference.uuid = reference.itemReferenceId',
         )
         .where('product.platformId = :productId', { productId })
         .andWhere('product.provider = :provider', { provider })
@@ -85,10 +81,10 @@ export class ReferenceRepository {
           'g.description AS description',
           'g.name AS name',
         ])
-        .leftJoin(Gallery, 'g', 'g.uuid::text = r.item_reference_id')
-        .leftJoin(Reference, 'ref', 'ref.group_id = g.uuid::text')
-        .leftJoin(Product, 'p', 'p.uuid::text = ref.item_reference_id')
-        .leftJoin(Product, 'p1', 'p1.uuid::text = r.productId')
+        .leftJoin(Gallery, 'g', 'g.uuid = r.item_reference_id')
+        .leftJoin(Reference, 'ref', 'ref.group_id = g.uuid')
+        .leftJoin(Product, 'p', 'p.uuid = ref.item_reference_id')
+        .leftJoin(Product, 'p1', 'p1.uuid = r.productId')
         .where('r.type = :type', { type: 'audio' })
         .andWhere('p1.platform_id = :platformID', { platformID: productId })
         .andWhere('p1.provider = :provider', { provider })
