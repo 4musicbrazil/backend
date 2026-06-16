@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { Gallery } from '../entities/gallery.entity';
 
 @Injectable()
@@ -36,32 +36,51 @@ export class GalleryRepository {
     take?: number,
   ): Promise<any> {
     try {
-      const where: Array<object> = [];
-      const typeFilter = type && type != null && type != 'null' ? type : null;
+      const typeFilter = type && type !== 'null' ? type : null;
       const searchFilter =
         search && search.trim() !== '' && search != 'null'
           ? search.trim()
           : null;
+      const normalizedSkip = Number.isFinite(skip) && skip > 0 ? skip : 0;
+      const normalizedTake =
+        Number.isFinite(take) && take > 0 ? Math.min(take, 1000) : 100;
 
-      if (typeFilter && searchFilter) {
-        where.push({ type: typeFilter, name: ILike(`%${searchFilter}%`) });
-        where.push({
-          type: typeFilter,
-          internalName: ILike(`%${searchFilter}%`),
-        });
-      } else if (typeFilter) {
-        where.push({ type: typeFilter });
-      } else if (searchFilter) {
-        where.push({ name: ILike(`%${searchFilter}%`) });
-        where.push({ internalName: ILike(`%${searchFilter}%`) });
+      const query = this.galleryRepository
+        .createQueryBuilder('gallery')
+        .select([
+          'gallery.uuid',
+          'gallery.name',
+          'gallery.internalName',
+          'gallery.duration',
+          'gallery.description',
+          'gallery.galleryKey',
+          'gallery.galleryUrl',
+          'gallery.type',
+          'gallery.createdAt',
+          'gallery.updatedAt',
+        ])
+        .orderBy('gallery.createdAt', 'DESC')
+        .skip(normalizedSkip)
+        .take(normalizedTake);
+
+      if (typeFilter) {
+        query.andWhere('gallery.type = :type', { type: typeFilter });
       }
 
-      const [galleries, total] = await this.galleryRepository.findAndCount({
-        where,
-        skip: skip ?? 0,
-        take: take ?? 0,
-      });
-      return { result: galleries, total: total };
+      if (searchFilter) {
+        query.andWhere(
+          new Brackets((qb) => {
+            qb.where('gallery.name ILIKE :search', {
+              search: `%${searchFilter}%`,
+            }).orWhere('gallery.internalName ILIKE :search', {
+              search: `%${searchFilter}%`,
+            });
+          }),
+        );
+      }
+
+      const galleries = await query.getMany();
+      return { result: galleries, total: galleries.length };
     } catch (error) {
       throw new HttpException(error?.message, HttpStatus.NOT_FOUND);
     }

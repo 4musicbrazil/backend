@@ -16,15 +16,22 @@ export class ReferenceRepository {
 
   async getOne(productId: string): Promise<any> {
     try {
-      return await this.referenceRepository.find({
-        where: {
-          uuid: productId,
-        },
-        relations: {
-          galleryReference: true,
-          productReference: true,
-        },
-      });
+      return await this.referenceRepository
+        .createQueryBuilder('reference')
+        .leftJoinAndMapOne(
+          'reference.galleryReference',
+          Gallery,
+          'galleryReference',
+          'galleryReference.uuid::text = reference.itemReferenceId',
+        )
+        .leftJoinAndMapOne(
+          'reference.productReference',
+          Product,
+          'productReference',
+          'productReference.uuid::text = reference.itemReferenceId',
+        )
+        .where('reference.uuid = :productId', { productId })
+        .getMany();
     } catch (error) {
       throw new HttpException(error?.message, HttpStatus.NOT_FOUND);
     }
@@ -34,18 +41,29 @@ export class ReferenceRepository {
     provider = getDefaultCatalogProvider(),
   ): Promise<any> {
     try {
-      return await this.referenceRepository.find({
-        where: {
-          product: {
-            platformId: productId,
-            provider,
-          },
-        },
-        relations: {
-          galleryReference: true,
-          productReference: true,
-        },
-      });
+      return await this.referenceRepository
+        .createQueryBuilder('reference')
+        .innerJoin(
+          Product,
+          'product',
+          'product.uuid::text = reference.productId',
+        )
+        .leftJoinAndMapOne(
+          'reference.galleryReference',
+          Gallery,
+          'galleryReference',
+          'galleryReference.uuid::text = reference.itemReferenceId',
+        )
+        .leftJoinAndMapOne(
+          'reference.productReference',
+          Product,
+          'productReference',
+          'productReference.uuid::text = reference.itemReferenceId',
+        )
+        .where('product.platformId = :productId', { productId })
+        .andWhere('product.provider = :provider', { provider })
+        .orderBy('reference.createdAt', 'ASC')
+        .getMany();
     } catch (error) {
       console.log(error);
       throw new HttpException(error?.message, HttpStatus.NOT_FOUND);
@@ -67,10 +85,10 @@ export class ReferenceRepository {
           'g.description AS description',
           'g.name AS name',
         ])
-        .leftJoin(Gallery, 'g', 'g.uuid = r.item_reference_id')
-        .leftJoin(Reference, 'ref', 'ref.group_id = g.uuid')
-        .leftJoin(Product, 'p', 'p.uuid = ref.item_reference_id')
-        .leftJoin(Product, 'p1', 'p1.uuid = r.productId')
+        .leftJoin(Gallery, 'g', 'g.uuid::text = r.item_reference_id')
+        .leftJoin(Reference, 'ref', 'ref.group_id = g.uuid::text')
+        .leftJoin(Product, 'p', 'p.uuid::text = ref.item_reference_id')
+        .leftJoin(Product, 'p1', 'p1.uuid::text = r.productId')
         .where('r.type = :type', { type: 'audio' })
         .andWhere('p1.platform_id = :platformID', { platformID: productId })
         .andWhere('p1.provider = :provider', { provider })
@@ -138,10 +156,6 @@ export class ReferenceRepository {
       const reference = await this.referenceRepository.findOne({
         where: {
           uuid: referenceUuid,
-        },
-        relations: {
-          galleryReference: true,
-          productReference: true,
         },
       });
       return await this.referenceRepository.softRemove(reference);

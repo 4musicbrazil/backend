@@ -61,7 +61,12 @@ export class GalleriesController {
     @Query('skip') skip?: string,
     @Query('take') take?: string,
   ) {
-    return this.galleriesService.findAll(type, search, +skip, +take);
+    return this.galleriesService.findAll(
+      type,
+      search,
+      Number(skip),
+      Number(take),
+    );
   }
 
   @Get(':gallerieUuid')

@@ -27,20 +27,20 @@ export class ReferencesController {
     return this.referencesService.getOne(referenceId);
   }
 
-  @Get(':productId')
-  listReference(
-    @Param('productId') productId: string,
-    @Query('provider') provider?: string,
-  ) {
-    return this.referencesService.listReference(productId, provider);
-  }
-
   @Get('list/old-model/:productId')
   listReference1(
     @Param('productId') productId: string,
     @Query('provider') provider?: string,
   ) {
     return this.referencesService.listReference1(productId, provider);
+  }
+
+  @Get(':productId')
+  listReference(
+    @Param('productId') productId: string,
+    @Query('provider') provider?: string,
+  ) {
+    return this.referencesService.listReference(productId, provider);
   }
 
   @Post('add-reference')
