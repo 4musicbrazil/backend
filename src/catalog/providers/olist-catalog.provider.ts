@@ -166,6 +166,10 @@ export class OlistCatalogProvider implements CatalogProvider {
       return response.items;
     }
 
+    if (Array.isArray(response?.results)) {
+      return response.results;
+    }
+
     return [];
   }
 
