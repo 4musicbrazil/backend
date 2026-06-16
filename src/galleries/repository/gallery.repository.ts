@@ -43,7 +43,7 @@ export class GalleryRepository {
           : null;
       const normalizedSkip = Number.isFinite(skip) && skip > 0 ? skip : 0;
       const normalizedTake =
-        Number.isFinite(take) && take > 0 ? Math.min(take, 1000) : 100;
+        Number.isFinite(take) && take > 0 ? Math.min(take, 250) : 100;
 
       const query = this.galleryRepository
         .createQueryBuilder('gallery')
